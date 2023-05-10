@@ -6,6 +6,7 @@ let width
 let height
 let cellCount
 let ratCount
+let trapCount
 let cells = []
 let ratIdx = []
 let ratArr = []
@@ -15,6 +16,7 @@ const screen = document.querySelector('section')
 
 // TODO: Event Listeners //
 document.addEventListener('click', handleClick)
+document.addEventListener('contextmenu', rightClick)
   
 // TODO: Functions       //
 init();
@@ -24,6 +26,7 @@ function init() {
     height = 10;
     cellCount = width * height;
     ratCount = 10;
+    trapCount = ratCount;
     createGrid();
     createBombs();
     console.log(cells);
@@ -33,12 +36,23 @@ function handleClick (evt) {
     const cell = evt.target;
     console.log(cell.id);
     console.log(cell.classList);
-    if (cell.classList === "rat-hidden") {
+    if (cell.classList == "rat-hidden") {
         ratArr.forEach(function(cell) {
+            console.log(cell.classList);
             cell.classList.remove('rat-hidden');
             cell.classList.add('rat');
         });
     }
+}
+
+function rightClick (evt) {
+    const cell = evt.target;
+    if (cell.id in cells && trapCount > 0) {
+        evt.preventDefault();
+        cell.classList.toggle('trap');
+        trapCount--;
+    }
+
 }
 
 function checkMines() {
@@ -73,7 +87,7 @@ function createBombs() {
         ratIdx.forEach(function(rat) {
             let cell = cells[i].id;
             if (cell == rat) {
-                cells[i].classList.add('rat');
+                cells[i].classList.add('rat-hidden');
                 ratArr.push(cells[i]);
             };
         });
