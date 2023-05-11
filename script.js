@@ -31,16 +31,17 @@ function init() {
     trapCount = ratCount;
     createGrid();
     createRats();
-    checkRats();
     console.log(ratIdx);
+    checkRats();
+    render();
     console.log(ratArr);
     console.log(cells);
 }
 
 function handleClick (evt) {
     const cell = evt.target;
-
     if (cell.classList == "rat-hidden") {showRats()};
+    if (cell.innerText == "0") {flood(cell)};
 }
 
 function rightClick (evt) {
@@ -61,7 +62,10 @@ function rightClick (evt) {
 
 
 function render() {
-
+    for (i = 0; i < cellCount; i++) {
+        cells[i].cell.innerText = cells[i].score;
+        if (cells[i].cell.classList.contains('rat-hidden')) {cells[i].cell.innerText = "rat"};
+    };
 }
 
 function showRats() {
@@ -110,7 +114,6 @@ function checkRats() {
     let ratCheckBelow = [];
     ratIdx.forEach(function(rat) {
         if (rat % width === 0) {                                   // Left Side
-            console.log("left: " + rat);
             ratCheckNeutral = [rat + 1];
             ratAbove = rat - width;
             ratCheckAbove = [ratAbove, ratAbove + 1];
@@ -119,7 +122,6 @@ function checkRats() {
         }
 
         else if (rat % width === width - 1) {                       // Right Side
-            console.log("right: " + rat);
             ratCheckNeutral = [rat - 1];
             ratAbove = rat - width;
             ratCheckAbove = [ratAbove, ratAbove - 1];
@@ -128,46 +130,43 @@ function checkRats() {
         }
 
         else if (rat < width) {                                     // Top Side
-            console.log("top: " + rat);
             ratCheckNeutral = [rat + 1, rat - 1];
             ratBelow = rat + width;
             ratCheckBelow = [ratBelow, ratBelow + 1, ratBelow - 1];
         }
 
         else if (rat > cellCount - width) {                         // Bottom Side
-            console.log("bottom: " + rat);
             ratCheckNeutral = [rat + 1, rat - 1];
             ratAbove = rat - width;
             ratCheckAbove = [ratAbove, ratAbove + 1, ratAbove - 1];
         }
 
         else {                                                      // Elsewhere
-            console.log("elsewhere: " + rat);
             ratCheckNeutral = [rat + 1, rat - 1];
             ratAbove = rat - width;
             ratCheckAbove = [ratAbove, ratAbove + 1, ratAbove - 1];
             ratBelow = rat + width;
             ratCheckBelow = [ratBelow, ratBelow + 1, ratBelow - 1];
-            console.log(ratCheckNeutral);
-            console.log(ratCheckAbove);
-            console.log(ratCheckBelow);
-    
         }
-
-        console.log(ratCheckNeutral);
-        console.log(ratCheckAbove);
-        console.log(ratCheckBelow);
 
         findRats(ratCheckNeutral);
         findRats(ratCheckAbove);
         findRats(ratCheckBelow);
-    })
-    
+    });
 }
 
 function findRats(ratCheck) {
+    ratCheck = ratCheck.filter(function(rat) {return rat > -1})
+    ratCheck = ratCheck.filter(function(rat) {return rat < 100})
     for (let i = 0; i < ratCheck.length; i++) {
-        cells[ratCheck].score++;
+        cells[ratCheck[i]].score++;
     }
-    console.log(cells.score);
+}
+
+function flood(cell) {
+    cell.innerText = "";
+    if (cell.id == 0) {console.log("ok")};
+    console.log(cell.innerText);
+    newId = cell.id;
+    console.log(newId);
 }
