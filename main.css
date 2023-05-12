@@ -26,19 +26,33 @@ main {
     margin: 10px;
 }
 
+button {
+    width: 40vmin;
+    height: 5vmin;
+    border-radius: 5vmin;
+    font-family: 'Sigmar', cursive;
+    font-size: 5vmin;
+    padding-bottom: 8vmin;
+}
+
+button:hover {
+    transform: scale(0.95);
+    border: 5vmin blueviolet;
+}
+
 article {
     background: blueviolet;
     height: 9vmin;
     width: 80vmin;
     font-size: 4vmin;
     padding-top: 1vmin;
-    border: 2px solid white;
+    border: 1px solid white;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
 }
   
 section {
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
-    border: 2px solid white;
+    border: 1px solid white;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -81,4 +95,18 @@ section div.trap {
     background-repeat: no-repeat;
     background-size: contain;
     cursor: pointer;
+}
+
+.left {
+    float: left;
+    width: 10vmin;
+    background-color: orange;
+    border: 1px solid white;
+}
+
+.right {
+    float: right;
+    background-color: orange;
+    width: 10vmin;
+    border: 1px solid white;
 }

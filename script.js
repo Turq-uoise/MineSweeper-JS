@@ -7,16 +7,22 @@ let height
 let cellCount
 let ratCount
 let trapCount
+let seconds
 let ratIdx = []
 let ratArr = []
-const cells = {}
+let cells = {}
+let timerVariable = setInterval(startTimer, 1000);
 
 // TODO: Cached Elements //
 const screen = document.querySelector('section')
+const leftFlag = document.querySelector('.left')
+const rightTimer = document.querySelector('.right')
+const resetBtn = document.querySelector('button')
 
 // TODO: Event Listeners //
 document.addEventListener('click', handleClick)
 document.addEventListener('contextmenu', rightClick)
+resetBtn.addEventListener('click', init)
   
 // TODO: Functions       //
 init();
@@ -24,24 +30,41 @@ init();
 function init() {
     document.addEventListener('click', handleClick)
     document.addEventListener('contextmenu', rightClick)
+    screen.innerHTML = "";
+
+    seconds = -1;
     width = 10;
     height = 10;
     cellCount = width * height;
     ratCount = 10;
     trapCount = ratCount;
+    leftFlag.innerText = trapCount;
+    rightTimer.innerText = seconds;
+    
     createGrid();
     createRats();
-    console.log(ratIdx);
+    startTimer();
     checkRats();
     render();
-    console.log(ratArr);
-    console.log(cells);
+}
+
+function startTimer() {
+    ++seconds;
+    rightTimer.innerHTML = seconds;
 }
 
 function handleClick (evt) {
     const cell = evt.target;
-    if (cell.classList == "rat-hidden") {showRats()};
-    if (cell.innerText == "0") {flood(cell)};
+    if (cell.classList == "rat-hidden") {showRats()}
+    else if (cells[cell.id].score == 0) {
+        flood(cell)
+    }
+    else if (cells[cell.id].score !== 7){
+        console.log("not rat or empty")
+        console.log("clicked text: " + cell.innerText)
+        console.log("clicked score: " + cells[cell.id].score)
+        cell.innerText = cells[cell.id].score
+    };
 }
 
 function rightClick (evt) {
@@ -56,16 +79,18 @@ function rightClick (evt) {
         else if (trapCount > 0) {
             cell.classList.add('trap');
             trapCount--;
-        }
+        }      
+        leftFlag.innerText = trapCount;
     }
 }
 
 
 function render() {
-    for (i = 0; i < cellCount; i++) {
-        cells[i].cell.innerText = cells[i].score;
-        if (cells[i].cell.classList.contains('rat-hidden')) {cells[i].cell.innerText = "rat"};
-    };
+    // for (i = 0; i < cellCount; i++) {
+    //     cells[i].cell.innerText = cells[i].score;
+    //     if (cells[i].cell.innerText == "0") {cells[i].cell.innerText = "empty"};
+    //     if (cells[i].cell.classList.contains('rat-hidden')) {cells[i].cell.innerText = "rat"};
+    // };
 }
 
 function showRats() {
@@ -156,17 +181,46 @@ function checkRats() {
 }
 
 function findRats(ratCheck) {
-    ratCheck = ratCheck.filter(function(rat) {return rat > -1})
-    ratCheck = ratCheck.filter(function(rat) {return rat < 100})
+    ratCheck = ratCheck.filter(function(rat) {return rat > -1});
+    ratCheck = ratCheck.filter(function(rat) {return rat < 100});
     for (let i = 0; i < ratCheck.length; i++) {
         cells[ratCheck[i]].score++;
-    }
+    };
 }
 
 function flood(cell) {
-    cell.innerText = "";
-    if (cell.id == 0) {console.log("ok")};
-    console.log(cell.innerText);
-    newId = cell.id;
-    console.log(newId);
+    console.log("flood start: " + cell.id);
+    cell.innerText = "free";
+    cells[cell.id].score = 7;
+    let up = +cell.id - width;
+    let right = +cell.id + 1;
+    let down = +cell.id + width;
+    let left = +cell.id - 1;
+
+    if (cell.id % width === 0) {rainCheck = [up, right, down]}
+
+    else if (cell.id % width === width - 1) {rainCheck = [up, down, left]}
+
+    else if (cell.id > cellCount - width) {rainCheck = [up, right, left]} 
+
+    else if (cell.id === width - 1) {rainCheck = [left, down]}
+
+    else if (cell.id === cellCount - width + 1) {rainCheck = [up, right]}
+
+    else {rainCheck = [up, right, down, left]};
+
+    rainCheck = rainCheck.filter(function(rain) {return rain > -1});
+    rainCheck = rainCheck.filter(function(rain) {return rain < 100});
+    console.log(rainCheck);
+    for (let i = 0; i < rainCheck.length; i++) {
+        console.log(cells[rainCheck[i]].cell);
+        if (cells[rainCheck[i]].score == 0) {flood(cells[rainCheck[i]].cell)}
+        else if (cells[rainCheck[i]].score > 0 && cells[rainCheck[i]].score < 7) {
+            console.log("touch");
+            console.log(cells[rainCheck[i]].cell.innerText);
+            console.log(cells[rainCheck[i]].score);
+            cells[rainCheck[i]].cell.innerText = cells[rainCheck[i]].score
+        }
+        else (console.log("no flood"));
+    }
 }
