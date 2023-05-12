@@ -35,9 +35,20 @@ button {
     padding-bottom: 8vmin;
 }
 
+.easy {
+    background-color: green;
+}
+
+.medium {
+    background-color: orangered;
+}
+
+.hard {
+    background-color: red;
+}
+
 button:hover {
-    transform: scale(0.95);
-    border: 5vmin blueviolet;
+    background-color: whitesmoke;
 }
 
 article {
@@ -66,9 +77,9 @@ section div {
     border: 1px solid lightgrey;
     background-color: #008080;
     text-align: center;
-    padding-top: 2vmin;
     font-family: 'VT323', monospace;
-    font-size: 4vmin;
+    float: center;
+    font-size: 2vmin;
     color: purple;
     flex-grow: 1;
 }

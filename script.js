@@ -1,5 +1,5 @@
 // TODO: Constants       // 
-  
+const Size = [10, 20, 30]
 
 // TODO: State Variables //
 let width
@@ -8,44 +8,59 @@ let cellCount
 let ratCount
 let trapCount
 let seconds
+let timerVariable
 let ratIdx = []
 let ratArr = []
 let cells = {}
-let timerVariable = setInterval(startTimer, 1000);
 
 // TODO: Cached Elements //
 const screen = document.querySelector('section')
 const leftFlag = document.querySelector('.left')
 const rightTimer = document.querySelector('.right')
-const resetBtn = document.querySelector('button')
+const resetBtn = document.querySelector('.reset')
+const easy = document.querySelector('.easy')
+const medium = document.querySelector('.medium')
+const hard = document.querySelector('.hard')
+const result = document.querySelector('.middle')
 
 // TODO: Event Listeners //
-document.addEventListener('click', handleClick)
-document.addEventListener('contextmenu', rightClick)
-resetBtn.addEventListener('click', init)
+easy.addEventListener('click', choice)
+medium.addEventListener('click', choice)
+hard.addEventListener('click', choice)
   
 // TODO: Functions       //
-init();
+function choice(choice) {
+    let sizeChoice;
+    if (choice.target.className == "easy") {sizeChoice = Size[0]}
+    if (choice.target.className == "medium") {sizeChoice = Size[1]}
+    if (choice.target.className == "hard") {sizeChoice = Size[2]}
+    width = sizeChoice;
+    height = sizeChoice;
+    ratCount = (sizeChoice * sizeChoice/10);
+    init();
+}
 
 function init() {
     document.addEventListener('click', handleClick)
     document.addEventListener('contextmenu', rightClick)
     screen.innerHTML = "";
-
+    clearInterval(timerVariable);
+    timerVariable = setInterval(startTimer, 1000);
     seconds = -1;
-    width = 10;
-    height = 10;
     cellCount = width * height;
-    ratCount = 10;
     trapCount = ratCount;
+    ratIdx = [];
+    ratArr = [];
     leftFlag.innerText = trapCount;
     rightTimer.innerText = seconds;
-    
+    result.innerText = "Have fun!";
+    cells = {};
+
     createGrid();
     createRats();
     startTimer();
     checkRats();
-    render();
+    console.log("Rats placed at: " + ratIdx);
 }
 
 function startTimer() {
@@ -60,9 +75,6 @@ function handleClick (evt) {
         flood(cell)
     }
     else if (cells[cell.id].score !== 7){
-        console.log("not rat or empty")
-        console.log("clicked text: " + cell.innerText)
-        console.log("clicked score: " + cells[cell.id].score)
         cell.innerText = cells[cell.id].score
     };
 }
@@ -82,15 +94,20 @@ function rightClick (evt) {
         }      
         leftFlag.innerText = trapCount;
     }
+    checkWin();
 }
 
-
-function render() {
-    // for (i = 0; i < cellCount; i++) {
-    //     cells[i].cell.innerText = cells[i].score;
-    //     if (cells[i].cell.innerText == "0") {cells[i].cell.innerText = "empty"};
-    //     if (cells[i].cell.classList.contains('rat-hidden')) {cells[i].cell.innerText = "rat"};
-    // };
+function checkWin() {
+    let ratsFound = 0;
+    for (let i = 0; i < cellCount; i++) {
+        if (cells[i].cell.classList.contains('trap') && cells[i].cell.classList.contains('rat-hidden')) {
+            ratsFound++;
+        }
+        if (ratsFound === ratCount) {
+            result.innerText = `YOU WIN!`;
+            stopGame();
+        }
+    }
 }
 
 function showRats() {
@@ -98,9 +115,16 @@ function showRats() {
         cell.classList.remove('rat-hidden');
         cell.classList.add('rat');
     });
+    result.innerText = `YOU LOSE!`;
+    stopGame();
+}
+
+function stopGame() {
     document.removeEventListener('click', handleClick)
     document.removeEventListener('contextmenu', rightClick)
+    clearInterval(timerVariable);
 }
+
 
 function createGrid(){
     for (let i = 0; i < cellCount; i++){
@@ -118,7 +142,7 @@ function createGrid(){
 // ! May repeat rats, need to find a way to make sure random number doesn't repeat
 function createRats() {
     for (let i = 0; i < ratCount; i++){
-        let rat = Math.floor((Math.random() * 100));
+        let rat = Math.floor((Math.random() * cellCount));
         ratIdx.push(rat);
     };
 
@@ -166,6 +190,18 @@ function checkRats() {
             ratCheckAbove = [ratAbove, ratAbove + 1, ratAbove - 1];
         }
 
+        else if (rat === width - 1) {
+            ratCheckNeutral = [rat - 1];
+            ratBelow = rat + width;
+            ratCheckBelow = [ratBelow, ratBelow - 1];
+        }
+
+        else if (rat === cellCount - width + 1) {
+            ratCheckNeutral = [rat + 1];
+            ratAbove = rat - width;
+            ratCheckAbove = [ratAbove, ratAbove + 1];
+        }
+
         else {                                                      // Elsewhere
             ratCheckNeutral = [rat + 1, rat - 1];
             ratAbove = rat - width;
@@ -189,9 +225,12 @@ function findRats(ratCheck) {
 }
 
 function flood(cell) {
-    console.log("flood start: " + cell.id);
-    cell.innerText = "free";
+    cell.style.backgroundColor = "#006060"; 
+    cell.style.borderColor = "darkgrey";
     cells[cell.id].score = 7;
+
+    let rainCheck = [];
+    
     let up = +cell.id - width;
     let right = +cell.id + 1;
     let down = +cell.id + width;
@@ -216,9 +255,6 @@ function flood(cell) {
         console.log(cells[rainCheck[i]].cell);
         if (cells[rainCheck[i]].score == 0) {flood(cells[rainCheck[i]].cell)}
         else if (cells[rainCheck[i]].score > 0 && cells[rainCheck[i]].score < 7) {
-            console.log("touch");
-            console.log(cells[rainCheck[i]].cell.innerText);
-            console.log(cells[rainCheck[i]].score);
             cells[rainCheck[i]].cell.innerText = cells[rainCheck[i]].score
         }
         else (console.log("no flood"));
