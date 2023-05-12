@@ -40,6 +40,7 @@ function choice(choice) {
     init();
 }
 
+
 function init() {
     document.addEventListener('click', handleClick)
     document.addEventListener('contextmenu', rightClick)
@@ -53,7 +54,7 @@ function init() {
     ratArr = [];
     leftFlag.innerText = trapCount;
     rightTimer.innerText = seconds;
-    result.innerText = "Have fun!";
+    result.innerText = "Clear the Plague!";
     cells = {};
 
     createGrid();
@@ -63,10 +64,12 @@ function init() {
     console.log("Rats placed at: " + ratIdx);
 }
 
+
 function startTimer() {
     ++seconds;
     rightTimer.innerHTML = seconds;
 }
+
 
 function handleClick (evt) {
     const cell = evt.target;
@@ -78,6 +81,7 @@ function handleClick (evt) {
         cell.innerText = cells[cell.id].score
     };
 }
+
 
 function rightClick (evt) {
     const cell = evt.target;
@@ -97,6 +101,7 @@ function rightClick (evt) {
     checkWin();
 }
 
+
 function checkWin() {
     let ratsFound = 0;
     for (let i = 0; i < cellCount; i++) {
@@ -110,6 +115,7 @@ function checkWin() {
     }
 }
 
+
 function showRats() {
     ratArr.forEach(function(cell) {
         cell.classList.remove('rat-hidden');
@@ -118,6 +124,7 @@ function showRats() {
     result.innerText = `YOU LOSE!`;
     stopGame();
 }
+
 
 function stopGame() {
     document.removeEventListener('click', handleClick)
@@ -139,12 +146,10 @@ function createGrid(){
 }
 
 
-// ! May repeat rats, need to find a way to make sure random number doesn't repeat
 function createRats() {
-    for (let i = 0; i < ratCount; i++){
-        let rat = Math.floor((Math.random() * cellCount));
-        ratIdx.push(rat);
-    };
+    ratIdx = Array(cellCount).fill().map((_, index) => index + 1);
+    ratIdx.sort(() => Math.random() - 0.5);
+    ratIdx = ratIdx.slice(0, ratCount)
 
     for (let i = 0; i < cellCount; i++){
         ratIdx.forEach(function(rat) {
@@ -156,6 +161,7 @@ function createRats() {
         });
     };
 }
+
 
 function checkRats() {
     let ratCheckNeutral = [];
@@ -216,21 +222,23 @@ function checkRats() {
     });
 }
 
+
 function findRats(ratCheck) {
     ratCheck = ratCheck.filter(function(rat) {return rat > -1});
-    ratCheck = ratCheck.filter(function(rat) {return rat < 100});
+    ratCheck = ratCheck.filter(function(rat) {return rat < cellCount});
     for (let i = 0; i < ratCheck.length; i++) {
         cells[ratCheck[i]].score++;
     };
 }
 
+
 function flood(cell) {
-    cell.style.backgroundColor = "#006060"; 
+    cell.style.backgroundColor = "rgba(0,0,0,0)"; 
     cell.style.borderColor = "darkgrey";
     cells[cell.id].score = 7;
 
     let rainCheck = [];
-    
+
     let up = +cell.id - width;
     let right = +cell.id + 1;
     let down = +cell.id + width;
@@ -249,14 +257,11 @@ function flood(cell) {
     else {rainCheck = [up, right, down, left]};
 
     rainCheck = rainCheck.filter(function(rain) {return rain > -1});
-    rainCheck = rainCheck.filter(function(rain) {return rain < 100});
-    console.log(rainCheck);
+    rainCheck = rainCheck.filter(function(rain) {return rain < cellCount});
     for (let i = 0; i < rainCheck.length; i++) {
-        console.log(cells[rainCheck[i]].cell);
         if (cells[rainCheck[i]].score == 0) {flood(cells[rainCheck[i]].cell)}
         else if (cells[rainCheck[i]].score > 0 && cells[rainCheck[i]].score < 7) {
             cells[rainCheck[i]].cell.innerText = cells[rainCheck[i]].score
         }
-        else (console.log("no flood"));
     }
 }

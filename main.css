@@ -5,9 +5,11 @@
 body {
     height: 120vh;
     margin: 0;
-    font-family: 'Sigmar', cursive;
-    background-color: #008080;
+    font-family: 'MedievalSharp', cursive;
     text-align: center;
+    background-image: url('../assets/medieval.png');
+    background-size: cover;
+    cursor: pointer;
 }
   
 header {
@@ -30,29 +32,29 @@ button {
     width: 40vmin;
     height: 5vmin;
     border-radius: 5vmin;
-    font-family: 'Sigmar', cursive;
+    font-family: 'MedievalSharp', cursive;
     font-size: 5vmin;
     padding-bottom: 8vmin;
 }
 
 .easy {
-    background-color: green;
+    background-color: rgb(69, 131, 69);
 }
 
 .medium {
-    background-color: orangered;
+    background-color: rgb(150, 85, 62);
 }
 
 .hard {
-    background-color: red;
+    background-color: rgb(190, 75, 75);
 }
 
 button:hover {
-    background-color: whitesmoke;
+    opacity: 80%;
 }
 
 article {
-    background: blueviolet;
+    background: rgba(180, 152, 111, 0.8);
     height: 9vmin;
     width: 80vmin;
     font-size: 4vmin;
@@ -66,8 +68,8 @@ section {
     border: 1px solid white;
     display: flex;
     flex-wrap: wrap;
+    background: rgba(180, 152, 111, 0.8);
     justify-content: center;
-    background-color: blueviolet;
     padding: 2vmin;
     height: 80vmin;
     width: 80vmin;
@@ -75,17 +77,15 @@ section {
   
 section div {
     border: 1px solid lightgrey;
-    background-color: #008080;
+    background-color: #e27777;
     text-align: center;
-    font-family: 'VT323', monospace;
-    float: center;
     font-size: 2vmin;
     color: purple;
     flex-grow: 1;
 }
 
 section div:hover {
-    border: 2px solid gray;
+    border: 2px solid rgb(158, 106, 71);
     transform: scale(0.98);
 }
 
