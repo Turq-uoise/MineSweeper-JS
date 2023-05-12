@@ -1,7 +1,7 @@
-// TODO: Constants       // 
+// Constants       // 
 const Size = [10, 20, 30]
 
-// TODO: State Variables //
+// State Variables //
 let width
 let height
 let cellCount
@@ -13,7 +13,7 @@ let ratIdx = []
 let ratArr = []
 let cells = {}
 
-// TODO: Cached Elements //
+// Cached Elements //
 const screen = document.querySelector('section')
 const leftFlag = document.querySelector('.left')
 const rightTimer = document.querySelector('.right')
@@ -23,12 +23,12 @@ const medium = document.querySelector('.medium')
 const hard = document.querySelector('.hard')
 const result = document.querySelector('.middle')
 
-// TODO: Event Listeners //
+// Event Listeners //
 easy.addEventListener('click', choice)
 medium.addEventListener('click', choice)
 hard.addEventListener('click', choice)
   
-// TODO: Functions       //
+// Functions       //
 function choice(choice) {
     let sizeChoice;
     if (choice.target.className == "easy") {sizeChoice = Size[0]}
@@ -43,7 +43,7 @@ function choice(choice) {
 
 function init() {
     document.addEventListener('click', handleClick)
-    document.addEventListener('contextmenu', rightClick)
+    document.addEventListener('contextmenu', handleRightClick)
     screen.innerHTML = "";
     clearInterval(timerVariable);
     timerVariable = setInterval(startTimer, 1000);
@@ -83,7 +83,7 @@ function handleClick (evt) {
 }
 
 
-function rightClick (evt) {
+function handleRightClick (evt) {
     const cell = evt.target;
 
     if (cell.id in cells) {
@@ -128,7 +128,7 @@ function showRats() {
 
 function stopGame() {
     document.removeEventListener('click', handleClick)
-    document.removeEventListener('contextmenu', rightClick)
+    document.removeEventListener('contextmenu', handleRightClick)
     clearInterval(timerVariable);
 }
 
