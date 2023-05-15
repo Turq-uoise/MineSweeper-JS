@@ -17,7 +17,6 @@ let cells = {}
 const screen = document.querySelector('section')
 const leftFlag = document.querySelector('.left')
 const rightTimer = document.querySelector('.right')
-const resetBtn = document.querySelector('.reset')
 const easy = document.querySelector('.easy')
 const medium = document.querySelector('.medium')
 const hard = document.querySelector('.hard')
@@ -73,7 +72,8 @@ function startTimer() {
 
 function handleClick (evt) {
     const cell = evt.target;
-    if (cell.classList == "rat-hidden") {showRats()}
+
+    if (cell.classList.contains("rat-hidden")) {showRats()}
     else if (cells[cell.id].score == 0) {
         flood(cell)
     }
@@ -81,6 +81,11 @@ function handleClick (evt) {
         cell.innerText = cells[cell.id].score
         cell.style.backgroundColor = "rgba(0,0,0,0)"; 
         cell.style.borderColor = "darkgrey";
+        if (cell.classList.contains("trap")) {
+            cell.classList.remove("trap");
+            trapCount++;
+            leftFlag.innerText = trapCount;
+        };
     };
 }
 
@@ -170,51 +175,44 @@ function checkRats() {
     let ratCheckAbove = [];
     let ratCheckBelow = [];
     ratIdx.forEach(function(rat) {
+        ratAbove = rat - width;
+        ratBelow = rat + width;
+        
         if (rat % width === 0) {                                   // Left Side
             ratCheckNeutral = [rat + 1];
-            ratAbove = rat - width;
             ratCheckAbove = [ratAbove, ratAbove + 1];
-            ratBelow = rat + width;
             ratCheckBelow = [ratBelow, ratBelow + 1];
         }
 
         else if (rat % width === width - 1) {                       // Right Side
             ratCheckNeutral = [rat - 1];
-            ratAbove = rat - width;
             ratCheckAbove = [ratAbove, ratAbove - 1];
-            ratBelow = rat + width;
             ratCheckBelow = [ratBelow, ratBelow - 1];
         }
 
         else if (rat < width) {                                     // Top Side
             ratCheckNeutral = [rat + 1, rat - 1];
-            ratBelow = rat + width;
             ratCheckBelow = [ratBelow, ratBelow + 1, ratBelow - 1];
         }
 
         else if (rat > cellCount - width) {                         // Bottom Side
             ratCheckNeutral = [rat + 1, rat - 1];
-            ratAbove = rat - width;
             ratCheckAbove = [ratAbove, ratAbove + 1, ratAbove - 1];
         }
 
         else if (rat === width - 1) {
             ratCheckNeutral = [rat - 1];
-            ratBelow = rat + width;
             ratCheckBelow = [ratBelow, ratBelow - 1];
         }
 
         else if (rat === cellCount - width + 1) {
             ratCheckNeutral = [rat + 1];
-            ratAbove = rat - width;
             ratCheckAbove = [ratAbove, ratAbove + 1];
         }
 
         else {                                                      // Elsewhere
             ratCheckNeutral = [rat + 1, rat - 1];
-            ratAbove = rat - width;
             ratCheckAbove = [ratAbove, ratAbove + 1, ratAbove - 1];
-            ratBelow = rat + width;
             ratCheckBelow = [ratBelow, ratBelow + 1, ratBelow - 1];
         }
 
@@ -238,6 +236,11 @@ function flood(cell) {
     cell.style.backgroundColor = "rgba(0,0,0,0)"; 
     cell.style.borderColor = "darkgrey";
     cells[cell.id].score = 7;
+    if (cell.classList.contains("trap")) {
+        cell.classList.remove("trap");
+        trapCount++;
+        leftFlag.innerText = trapCount;
+    };
 
     let rainCheck = [];
 
@@ -261,19 +264,59 @@ function flood(cell) {
     rainCheck = rainCheck.filter(function(rain) {return rain > -1});
     rainCheck = rainCheck.filter(function(rain) {return rain < cellCount});
     for (let i = 0; i < rainCheck.length; i++) {
-        if (cells[rainCheck[i]].score == 0) {flood(cells[rainCheck[i]].cell)}
-        else if (cells[rainCheck[i]].score > 0 && cells[rainCheck[i]].score < 7) {
+        if (cells[rainCheck[i]].score == 0) {
+            flood(cells[rainCheck[i]].cell)
+            floodCorner(cell);
+        }   else if (cells[rainCheck[i]].score > 0 && cells[rainCheck[i]].score < 7) {
             cells[rainCheck[i]].cell.innerText = cells[rainCheck[i]].score;
             cells[rainCheck[i]].cell.style.backgroundColor = "rgba(0,0,0,0)"; 
             cells[rainCheck[i]].cell.style.borderColor = "darkgrey";
+            if (cell.classList.contains("trap")) {
+                cell.classList.remove("trap");
+                trapCount++;
+                leftFlag.innerText = trapCount;
+            };
         }
     }
 }
+
+// function floodCorner(cell) {
+//     let up = +cell.id - width;
+//     let right = +cell.id + 1;
+//     let down = +cell.id + width;
+//     let left = +cell.id - 1;
+//     let diagRightUp = +cell.id - width + 1;
+//     let diagRightDown = +cell.id + width + 1;
+//     let diagLeftUp = +cell.id - 1 - width;
+//     let diagLeftDown = +cell.id -1 + width;
+
+//     if ((cells[up].score > 0 && cells[up].score < 7) && (cells[left].score > 0 && cells[left].score < 7)) {
+//         cells[diagLeftUp].cell.innerText = cells[diagLeftUp].score;
+//         cells[diagLeftUp].cell.style.backgroundColor = "rgba(0,0,0,0)"; 
+//         cells[diagLeftUp].cell.style.borderColor = "darkgrey";
+//     }
+
+//     else if ((cells[up].score > 0 && cells[up].score < 7) && (cells[right].score > 0 && cells[right].score < 7)) {
+//         cells[diagRightUp].cell.innerText = cells[diagRightUp].score;
+//         cells[diagRightUp].cell.style.backgroundColor = "rgba(0,0,0,0)"; 
+//         cells[diagRightUp].cell.style.borderColor = "darkgrey";
+//     }
+
+//     else if ((cells[down].score > 0 && cells[down].score < 7) && (cells[left].score > 0 && cells[left].score < 7)) {
+//         cells[diagLeftDown].cell.innerText = cells[diagLeftDown].score;
+//         cells[diagLeftDown].cell.style.backgroundColor = "rgba(0,0,0,0)"; 
+//         cells[diagLeftDown].cell.style.borderColor = "darkgrey";
+//     }
+
+//     else if ((cells[down].score > 0 && cells[down].score < 7) && (cells[right].score > 0 && cells[right].score < 7)) {
+//         cells[diagDownRight].cell.innerText = cells[diagDownRight].score;
+//         cells[diagDownRight].cell.style.backgroundColor = "rgba(0,0,0,0)"; 
+//         cells[diagDownRight].cell.style.borderColor = "darkgrey";
+//     }
+// }
 
 /* 
 Bugs:
 Corners not being revealed correctly
     Set variable to check corners
-Traps remove rats 
-Traps aren't removed when clicked
 */
