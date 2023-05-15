@@ -61,6 +61,7 @@ function init() {
     createRats();
     startTimer();
     checkRats();
+    render();
     console.log("Rats placed at: " + ratIdx);
 }
 
@@ -70,6 +71,11 @@ function startTimer() {
     rightTimer.innerHTML = seconds;
 }
 
+function render() {
+    for (let i = 0; i < cellCount; i++) {
+        if (cells[i].score !== 0 && !cells[i].cell.classList.contains('rat-hidden')) {cells[i].cell.innerText = cells[i].score};
+    }
+}
 
 function handleClick (evt) {
     const cell = evt.target;
@@ -79,6 +85,8 @@ function handleClick (evt) {
     }
     else if (cells[cell.id].score !== 7){
         cell.innerText = cells[cell.id].score
+        cell.style.backgroundColor = "rgba(0,0,0,0)"; 
+        cell.style.borderColor = "darkgrey";
     };
 }
 
@@ -261,7 +269,17 @@ function flood(cell) {
     for (let i = 0; i < rainCheck.length; i++) {
         if (cells[rainCheck[i]].score == 0) {flood(cells[rainCheck[i]].cell)}
         else if (cells[rainCheck[i]].score > 0 && cells[rainCheck[i]].score < 7) {
-            cells[rainCheck[i]].cell.innerText = cells[rainCheck[i]].score
+            cells[rainCheck[i]].cell.innerText = cells[rainCheck[i]].score;
+            cells[rainCheck[i]].cell.style.backgroundColor = "rgba(0,0,0,0)"; 
+            cells[rainCheck[i]].cell.style.borderColor = "darkgrey";
+            // set variable to check corners?
         }
     }
 }
+
+/* 
+Bugs:
+Corners not being revealed correctly
+Traps remove rats 
+Traps aren't removed when clicked
+*/
