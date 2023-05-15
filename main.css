@@ -7,7 +7,7 @@ body {
     margin: 0;
     font-family: 'MedievalSharp', cursive;
     text-align: center;
-    background-image: url('../assets/medieval.png');
+    background-image: url('./assets/medieval.png');
     background-size: cover;
     cursor: pointer;
 }
@@ -95,14 +95,14 @@ section div.rat-hidden {
 }
 
 section div.rat {
-    background-image: url('../assets/rat.png');
+    background-image: url('./assets/rat.png');
     background-repeat: no-repeat;
     background-size: contain;
     cursor: pointer;
 }
 
 section div.trap {
-    background-image: url('../assets/trap.png');
+    background-image: url('./assets/trap.png');
     background-repeat: no-repeat;
     background-size: contain;
     cursor: pointer;
