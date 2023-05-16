@@ -264,10 +264,8 @@ function flood(cell) {
     rainCheck = rainCheck.filter(function(rain) {return rain > -1});
     rainCheck = rainCheck.filter(function(rain) {return rain < cellCount});
     for (let i = 0; i < rainCheck.length; i++) {
-        if (cells[rainCheck[i]].score == 0) {
-            flood(cells[rainCheck[i]].cell)
-            floodCorner(cell);
-        }   else if (cells[rainCheck[i]].score > 0 && cells[rainCheck[i]].score < 7) {
+        if (cells[rainCheck[i]].score == 0) {flood(cells[rainCheck[i]].cell)}   
+        else if (cells[rainCheck[i]].score > 0 && cells[rainCheck[i]].score < 7) {
             cells[rainCheck[i]].cell.innerText = cells[rainCheck[i]].score;
             cells[rainCheck[i]].cell.style.backgroundColor = "rgba(0,0,0,0)"; 
             cells[rainCheck[i]].cell.style.borderColor = "darkgrey";
